@@ -32,9 +32,9 @@
 					</el-button>
 
 
-					<el-button class="btn18" v-if="isAuth('qiandaodengji','审核')" :disabled="dataListSelections.length?false:true" type="success" @click="shBatchDialog()">
+					<el-button class="btn18" v-if="isAuth('qiandaodengji','审核')" :disabled="dataListSelections.length?false:true" type="success" @click="qiandaoBatch()">
 						<span class="icon iconfont icon-shenhe9" :style='{"margin":"0 0px","fontSize":"16px","color":"#fff","height":"auto"}'></span>
-						审核
+						签到
 					</el-button>
 					<el-button class="btn18" v-if="isAuth('qiandaodengji','用户签到统计')" type="success" @click="chartDialogShow1">
 						<span class="icon iconfont icon-xihuan" :style='{"margin":"0 0px","fontSize":"16px","color":"#fff","height":"auto"}'></span>
@@ -188,22 +188,12 @@
 		<qiantuijilu-cross-add-or-update v-if="qiantuijiluCrossAddOrUpdateFlag" :parent="this" ref="qiantuijiluCrossaddOrUpdate"></qiantuijilu-cross-add-or-update>
 
 		
-		<el-dialog :title="this.batchIds.length>1?'批量审核':'审核'" :visible.sync="sfshBatchVisiable" width="50%">
-			<el-form ref="shBatchForm" :model="shBatchForm" :rules="shRules" label-width="80px">
-				<el-form-item label="审核状态" prop="sfsh">
-					<el-select v-model="shBatchForm.sfsh" placeholder="审核状态">
-						<el-option label="通过" value="是"></el-option>
-						<el-option label="不通过" value="否"></el-option>
-						<el-option label="待审核" value="待审核"></el-option>
-					</el-select>
-				</el-form-item>
-				<el-form-item label="内容" prop="shhf">
-					<el-input type="textarea" :rows="8" v-model="shBatchForm.shhf"></el-input>
-				</el-form-item>
-			</el-form>
+		<!-- 签到确认对话框 -->
+		<el-dialog title="确认签到" :visible.sync="qiandaoBatchVisiable" width="40%">
+			<p>确定对选中的 {{batchIds.length}} 条记录执行签到操作？</p>
 			<span slot="footer" class="dialog-footer">
-				<el-button @click="sfshBatchVisiable=false">取 消</el-button>
-				<el-button type="primary" @click="shBatchHandler">确 定</el-button>
+				<el-button @click="qiandaoBatchVisiable=false">取 消</el-button>
+				<el-button type="primary" @click="qiandaoBatchHandler">确认签到</el-button>
 			</span>
 		</el-dialog>
 
@@ -251,14 +241,7 @@
 				showFlag: true,
 				sfshVisiable: false,
 				shForm: {},
-				sfshBatchVisiable: false,
-				shBatchForm: {
-					sfsh:'',
-					shhf:''
-				},
-				shRules: {
-					sfsh:[{ required: true, message: '审核状态不能为空', trigger: 'blur' },],
-				},
+				qiandaoBatchVisiable: false,
 				batchIds:[],
 				shList: [],
 				line: {"backgroundColor":"transparent","yAxis":{"axisLabel":{"borderType":"solid","rotate":0,"padding":0,"shadowOffsetX":0,"margin":15,"backgroundColor":"transparent","borderColor":"#000","shadowOffsetY":0,"color":"#333","shadowBlur":0,"show":true,"inside":false,"ellipsis":"...","overflow":"none","borderRadius":0,"borderWidth":0,"width":"","fontSize":12,"lineHeight":24,"shadowColor":"transparent","fontWeight":"normal","height":""},"axisTick":{"show":true,"length":5,"lineStyle":{"shadowOffsetX":0,"shadowOffsetY":0,"cap":"butt","color":"#333","shadowBlur":0,"width":1,"type":"solid","opacity":1,"shadowColor":"rgba(0,0,0,.5)"},"inside":false},"splitLine":{"lineStyle":{"shadowOffsetX":0,"shadowOffsetY":0,"cap":"butt","color":"#666","shadowBlur":0,"width":1,"type":"solid","opacity":1,"shadowColor":"rgba(0,0,0,.5)"},"show":true},"minInterval":1,"axisLine":{"lineStyle":{"shadowOffsetX":0,"shadowOffsetY":0,"cap":"butt","color":"#333","shadowBlur":0,"width":1,"type":"solid","opacity":1,"shadowColor":"rgba(0,0,0,.5)"},"show":true},"splitArea":{"show":false,"areaStyle":{"shadowOffsetX":0,"shadowOffsetY":0,"color":"rgba(25,25,25,0.3)","opacity":1,"shadowBlur":10,"shadowColor":"rgba(0,0,0,.5)"}}},"xAxis":{"axisLabel":{"borderType":"solid","rotate":30,"padding":0,"shadowOffsetX":0,"margin":10,"backgroundColor":"transparent","borderColor":"#000","shadowOffsetY":0,"color":"#333","shadowBlur":0,"show":true,"inside":false,"ellipsis":"...","overflow":"truncate","borderRadius":0,"borderWidth":0,"width":120,"interval":0,"fontSize":12,"lineHeight":24,"shadowColor":"transparent","fontWeight":"normal","height":""},"axisTick":{"show":true,"length":5,"lineStyle":{"shadowOffsetX":0,"shadowOffsetY":0,"cap":"butt","color":"#333","shadowBlur":0,"width":1,"type":"solid","opacity":1,"shadowColor":"rgba(0,0,0,.5)"},"inside":false},"splitLine":{"lineStyle":{"shadowOffsetX":0,"shadowOffsetY":0,"cap":"butt","color":"#333","shadowBlur":0,"width":1,"type":"solid","opacity":1,"shadowColor":"rgba(0,0,0,.5)"},"show":false},"axisLine":{"lineStyle":{"shadowOffsetX":0,"shadowOffsetY":0,"cap":"butt","color":"#333","shadowBlur":0,"width":1,"type":"solid","opacity":1,"shadowColor":"rgba(0,0,0,.5)"},"show":true},"splitArea":{"show":false,"areaStyle":{"shadowOffsetX":0,"shadowOffsetY":0,"color":"rgba(25,25,25,.3)","opacity":1,"shadowBlur":10,"shadowColor":"rgba(0,0,0,.5)"}}},"color":["#7b4ffb","#dc3dfa","#76bd9e","#3b43f7","#73c0de","#89e6d8","#4495ac","#9a60b4","#ea7ccc"],"legend":{"padding":0,"itemGap":10,"shadowOffsetX":0,"backgroundColor":"transparent","borderColor":"#666","shadowOffsetY":0,"orient":"horizontal","shadowBlur":0,"bottom":"auto","itemHeight":14,"show":true,"icon":"roundRect","itemStyle":{"borderType":"solid","shadowOffsetX":0,"borderColor":"inherit","shadowOffsetY":0,"color":"inherit","shadowBlur":0,"borderWidth":0,"opacity":1,"shadowColor":"transparent"},"right":"auto","top":"auto","borderRadius":0,"lineStyle":{"shadowOffsetX":0,"shadowOffsetY":0,"color":"inherit","shadowBlur":0,"width":"auto","type":"inherit","opacity":1,"shadowColor":"transparent"},"left":"right","borderWidth":0,"width":"80%","itemWidth":20,"textStyle":{"textBorderWidth":0,"color":"inherit","textShadowColor":"transparent","ellipsis":"...","overflow":"none","fontSize":12,"lineHeight":24,"textShadowOffsetX":0,"textShadowOffsetY":0,"textBorderType":"solid","fontWeight":500,"textBorderColor":"transparent","textShadowBlur":0},"shadowColor":"rgba(0,0,0,.3)","height":"auto"},"series":{"showSymbol":true,"symbol":"pin","symbolSize":20},"tooltip":{"backgroundColor":"#123","textStyle":{"color":"#fff"}},"title":{"borderType":"solid","padding":0,"shadowOffsetX":0,"backgroundColor":"transparent","borderColor":"#666","shadowOffsetY":0,"shadowBlur":0,"bottom":"auto","show":true,"right":"auto","top":"auto","borderRadius":0,"left":"left","borderWidth":0,"textStyle":{"textBorderWidth":0,"color":"#333","textShadowColor":"transparent","fontSize":14,"lineHeight":24,"textShadowOffsetX":0,"textShadowOffsetY":0,"textBorderType":"solid","fontWeight":600,"textBorderColor":"#666","textShadowBlur":0},"shadowColor":"transparent"}},
@@ -547,64 +530,58 @@
 					this.$refs.addOrUpdate.init(id,type );
 				});
 			},
-			//批量审核窗口
-			shBatchDialog(){
+			//签到弹窗
+			qiandaoBatch(){
+				this.batchIds = []
 				for(let x in this.dataListSelections){
-					if(this.dataListSelections[x].sfsh&&this.dataListSelections[x].sfsh!='待审核'){
-						this.$message.error('存在已审核数据，不能继续操作');
+					if(this.dataListSelections[x].sfsh&&this.dataListSelections[x].sfsh=='是'){
+						this.$message.error('存在已签到数据，不能继续操作');
 						this.batchIds = []
 						return false
 					}
 					this.batchIds.push(this.dataListSelections[x].id)
 				}
 				this.shList = this.dataListSelections
-				this.sfshBatchVisiable = true
+				this.qiandaoBatchVisiable = true
 			},
-			//批量审核
-			shBatchHandler(){
-				this.$refs["shBatchForm"].validate(valid => {
-					if(valid){
-						this.$confirm(`是否${this.batchIds.length>1?'一键审核':'审核'}选中数据?`, "提示", {
-							confirmButtonText: "确定",
-							cancelButtonText: "取消",
-							type: "warning"
-						}).then(async() => {
-							let changeType = true
-							let errMsg = ''
-							if(this.shBatchForm.sfsh=='是') {
-								for(let x in this.shList){
-									await this.$http.post('updateColumn/zuoweiyuyue/1',{
-										csuUpdateColumn: 'qiandaozhuangtai',
-										csuUpdateColumnValue: '已签到',
-										csuConditionColumn: 'refno',
-										csuConditionColumnValue: this.shList[x].refno
-									}).then(rs=>{
-									})
-								}
-							}
-							this.$http({
-								url: "qiandaodengji/shBatch?sfsh="+this.shBatchForm.sfsh+"&shhf="+this.shBatchForm.shhf,
-								method: "post",
-								data: this.batchIds
-							}).then(async ({ data }) => {
-								if (data && data.code === 0) {
-									this.$message({
-										message: "操作成功",
-										type: "success",
-										duration: 1500,
-										onClose: () => {
-											this.getDataList();
-											this.sfshBatchVisiable = false
-											this.batchIds = []
-										}
-									});
-								} else {
-									this.$message.error(data.msg);
+			//批量签到
+			qiandaoBatchHandler(){
+				this.$confirm('是否确认签到选中数据?', "提示", {
+					confirmButtonText: "确定",
+					cancelButtonText: "取消",
+					type: "warning"
+				}).then(async() => {
+					// 先更新预约表的签到状态
+					for(let x in this.shList){
+						await this.$http.post('updateColumn/zuoweiyuyue/1',{
+							csuUpdateColumn: 'qiandaozhuangtai',
+							csuUpdateColumnValue: '已签到',
+							csuConditionColumn: 'refno',
+							csuConditionColumnValue: this.shList[x].refno
+						}).then(rs=>{
+						})
+					}
+					this.$http({
+						url: "qiandaodengji/shBatch",
+						method: "post",
+						data: this.batchIds
+					}).then(async ({ data }) => {
+						if (data && data.code === 0) {
+							this.$message({
+								message: "签到成功",
+								type: "success",
+								duration: 1500,
+								onClose: () => {
+									this.getDataList();
+									this.qiandaoBatchVisiable = false
+									this.batchIds = []
 								}
 							});
-						});
-					}
-				})
+						} else {
+							this.$message.error(data.msg);
+						}
+					});
+				});
 			},
 			// 删除
 			async deleteHandler(id ) {

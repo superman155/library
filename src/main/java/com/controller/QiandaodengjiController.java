@@ -203,22 +203,26 @@ public class QiandaodengjiController {
     }
 
     /**
-     * 审核 — 工作人员确认签到，同时更新预约的签到状态
+     * 签到 — 工作人员直接确认签到，同时更新预约的签到状态
      */
     @RequestMapping("/shBatch")
     @Transactional
-    @SysLog("审核签到登记")
-    public R update(@RequestBody Long[] ids, @RequestParam String sfsh, @RequestParam String shhf){
+    @SysLog("工作人员签到")
+    public R update(@RequestBody Long[] ids){
         List<QiandaodengjiEntity> list = new ArrayList<QiandaodengjiEntity>();
         for(Long id : ids) {
             QiandaodengjiEntity qiandaodengji = qiandaodengjiService.selectById(id);
-            qiandaodengji.setSfsh(sfsh);
-            qiandaodengji.setShhf(shhf);
+            // 已签到的跳过
+            if("是".equals(qiandaodengji.getSfsh())) {
+                continue;
+            }
+            qiandaodengji.setSfsh("是");
+            qiandaodengji.setShhf("工作人员已确认签到");
             qiandaodengji.setQiandaoshijian(new Date());
             list.add(qiandaodengji);
 
-            // 签到成功时，同步更新预约表的签到状态
-            if("是".equals(sfsh) && qiandaodengji.getYuyueid() != null) {
+            // 同步更新预约表的签到状态
+            if(qiandaodengji.getYuyueid() != null) {
                 ZuoweiyuyueEntity zuoweiyuyue = zuoweiyuyueService.selectById(qiandaodengji.getYuyueid());
                 if(zuoweiyuyue != null) {
                     zuoweiyuyue.setQiandaozhuangtai("已签到");

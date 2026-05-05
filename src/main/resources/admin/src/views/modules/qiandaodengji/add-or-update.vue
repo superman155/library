@@ -191,7 +191,7 @@
 					touxiang: '',
 					shoujihaoma: '',
 					yuangonggonghao: '',
-					sfsh: '待审核',
+					sfsh: '是',
 					shhf: '',
 				},
 

@@ -23,10 +23,7 @@
 						<span class="icon iconfont icon-fangdajing07"></span>
 						搜索
 					</el-button>
-					<el-button class="list-add-btn" v-if="btnAuth('qiandaodengji','新增')" type="primary" @click="add('/index/qiandaodengjiAdd')">
-						<span class="icon iconfont icon-tianjia14"></span>
-						新增
-					</el-button>
+					<!-- 用户端不提供签到功能，只能签退 -->
   					<el-button class="list-static-btn" v-if="btnAuth('qiandaodengji','用户签到统计')" type="success" @click="chartDialogShow1">
 						<span class="icon iconfont " ></span>
 						用户签到统计

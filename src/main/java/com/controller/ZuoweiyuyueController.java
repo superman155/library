@@ -219,7 +219,7 @@ public class ZuoweiyuyueController {
     }
 
     /**
-     * 审核 — 预约通过后自动生成签到审核记录
+     * 审核 — 预约通过后自动生成签到记录（直接标记为已签到）
      */
     @RequestMapping("/shBatch")
     @Transactional
@@ -236,7 +236,7 @@ public class ZuoweiyuyueController {
             }
             list.add(zuoweiyuyue);
 
-            // 审核通过时，自动生成签到审核记录
+            // 审核通过时，自动生成签到记录（直接标记为已签到）
             if("是".equals(sfsh)) {
                 QiandaodengjiEntity qiandao = new QiandaodengjiEntity();
                 qiandao.setRefno(zuoweiyuyue.getRefno());
@@ -248,9 +248,14 @@ public class ZuoweiyuyueController {
                 qiandao.setXingming(zuoweiyuyue.getXingming());
                 qiandao.setYuangonggonghao(zuoweiyuyue.getYuangonggonghao());
                 qiandao.setYuyueid(zuoweiyuyue.getId());
-                qiandao.setSfsh("待审核");
+                qiandao.setSfsh("是");
+                qiandao.setShhf("预约审核通过，自动生成签到记录");
+                qiandao.setQiandaoshijian(new Date());
                 qiandao.setQiandaobeizhu("预约日期: " + zuoweiyuyue.getReservationdate() + ", 时间段: " + zuoweiyuyue.getTimeslot());
                 qiandaodengjiService.insert(qiandao);
+
+                // 同步更新预约的签到状态为"已签到"
+                zuoweiyuyue.setQiandaozhuangtai("已签到");
             }
         }
         zuoweiyuyueService.updateBatchById(list);
