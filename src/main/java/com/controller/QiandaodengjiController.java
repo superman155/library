@@ -28,8 +28,10 @@ import com.annotation.SysLog;
 
 import com.entity.QiandaodengjiEntity;
 import com.entity.view.QiandaodengjiView;
+import com.entity.ZuoweiyuyueEntity;
 
 import com.service.QiandaodengjiService;
+import com.service.ZuoweiyuyueService;
 import com.utils.PageUtils;
 import com.utils.R;
 import com.utils.MPUtil;
@@ -49,6 +51,8 @@ import java.io.IOException;
 public class QiandaodengjiController {
     @Autowired
     private QiandaodengjiService qiandaodengjiService;
+    @Autowired
+    private ZuoweiyuyueService zuoweiyuyueService;
 
 
 
@@ -199,7 +203,7 @@ public class QiandaodengjiController {
     }
 
     /**
-     * 审核
+     * 审核 — 工作人员确认签到，同时更新预约的签到状态
      */
     @RequestMapping("/shBatch")
     @Transactional
@@ -210,7 +214,17 @@ public class QiandaodengjiController {
             QiandaodengjiEntity qiandaodengji = qiandaodengjiService.selectById(id);
             qiandaodengji.setSfsh(sfsh);
             qiandaodengji.setShhf(shhf);
+            qiandaodengji.setQiandaoshijian(new Date());
             list.add(qiandaodengji);
+
+            // 签到成功时，同步更新预约表的签到状态
+            if("是".equals(sfsh) && qiandaodengji.getYuyueid() != null) {
+                ZuoweiyuyueEntity zuoweiyuyue = zuoweiyuyueService.selectById(qiandaodengji.getYuyueid());
+                if(zuoweiyuyue != null) {
+                    zuoweiyuyue.setQiandaozhuangtai("已签到");
+                    zuoweiyuyueService.updateById(zuoweiyuyue);
+                }
+            }
         }
         qiandaodengjiService.updateBatchById(list);
         return R.ok();

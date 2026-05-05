@@ -16,6 +16,7 @@
         <result property="touxiang" column="touxiang"/>
         <result property="shoujihaoma" column="shoujihaoma"/>
         <result property="yuangonggonghao" column="yuangonggonghao"/>
+        <result property="yuyueid" column="yuyueid"/>
         <result property="sfsh" column="sfsh"/>
         <result property="shhf" column="shhf"/>
     </resultMap>

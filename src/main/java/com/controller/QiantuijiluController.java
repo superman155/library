@@ -28,8 +28,10 @@ import com.annotation.SysLog;
 
 import com.entity.QiantuijiluEntity;
 import com.entity.view.QiantuijiluView;
+import com.entity.ZuoweiyuyueEntity;
 
 import com.service.QiantuijiluService;
+import com.service.ZuoweiyuyueService;
 import com.utils.PageUtils;
 import com.utils.R;
 import com.utils.MPUtil;
@@ -49,6 +51,8 @@ import java.io.IOException;
 public class QiantuijiluController {
     @Autowired
     private QiantuijiluService qiantuijiluService;
+    @Autowired
+    private ZuoweiyuyueService zuoweiyuyueService;
 
 
 
@@ -160,25 +164,43 @@ public class QiantuijiluController {
 
 
     /**
-     * 后台保存
+     * 后台保存 — 签退后自动释放座位
      */
     @RequestMapping("/save")
     @SysLog("新增签退记录")
     public R save(@RequestBody QiantuijiluEntity qiantuijilu, HttpServletRequest request){
-        //ValidatorUtils.validateEntity(qiantuijilu);
+        qiantuijilu.setQiantuishijian(new Date());
         qiantuijiluService.insert(qiantuijilu);
+        // 签退后自动释放座位
+        releaseSeat(qiantuijilu);
         return R.ok().put("data",qiantuijilu.getId());
     }
 
     /**
-     * 前台保存
+     * 前台保存 — 用户签退后自动释放座位
      */
     @SysLog("新增签退记录")
     @RequestMapping("/add")
     public R add(@RequestBody QiantuijiluEntity qiantuijilu, HttpServletRequest request){
-        //ValidatorUtils.validateEntity(qiantuijilu);
+        qiantuijilu.setQiantuishijian(new Date());
         qiantuijiluService.insert(qiantuijilu);
+        // 签退后自动释放座位
+        releaseSeat(qiantuijilu);
         return R.ok().put("data",qiantuijilu.getId());
+    }
+
+    /**
+     * 释放座位 — 根据签退记录找到对应预约，更新状态为已签退，释放座位
+     */
+    private void releaseSeat(QiantuijiluEntity qiantuijilu) {
+        if(qiantuijilu.getCrossrefid() != null) {
+            ZuoweiyuyueEntity zuoweiyuyue = zuoweiyuyueService.selectById(qiantuijilu.getCrossrefid());
+            if(zuoweiyuyue != null) {
+                zuoweiyuyue.setReservationstate("已签退");
+                zuoweiyuyue.setQiandaozhuangtai("已签退");
+                zuoweiyuyueService.updateById(zuoweiyuyue);
+            }
+        }
     }
 
 

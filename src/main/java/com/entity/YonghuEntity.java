@@ -91,6 +91,16 @@ public class YonghuEntity<T> implements Serializable {
 	 */
 	private String banji;
 	
+	/**
+	 * 违约次数
+	 */
+	private Integer weiyuecishu;
+	
+	/**
+	 * 预约禁止(0:正常,1:禁止)
+	 */
+	private Integer yuyuejinzhi;
+	
 	@JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
 	@DateTimeFormat
 	private Date addtime;

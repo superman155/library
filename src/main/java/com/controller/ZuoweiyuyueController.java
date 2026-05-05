@@ -28,8 +28,12 @@ import com.annotation.SysLog;
 
 import com.entity.ZuoweiyuyueEntity;
 import com.entity.view.ZuoweiyuyueView;
+import com.entity.QiandaodengjiEntity;
+import com.entity.YonghuEntity;
 
 import com.service.ZuoweiyuyueService;
+import com.service.QiandaodengjiService;
+import com.service.YonghuService;
 import com.utils.PageUtils;
 import com.utils.R;
 import com.utils.MPUtil;
@@ -49,6 +53,10 @@ import java.io.IOException;
 public class ZuoweiyuyueController {
     @Autowired
     private ZuoweiyuyueService zuoweiyuyueService;
+    @Autowired
+    private QiandaodengjiService qiandaodengjiService;
+    @Autowired
+    private YonghuService yonghuService;
 
 
 
@@ -166,18 +174,29 @@ public class ZuoweiyuyueController {
     @RequestMapping("/save")
     @SysLog("新增座位预约")
     public R save(@RequestBody ZuoweiyuyueEntity zuoweiyuyue, HttpServletRequest request){
-        //ValidatorUtils.validateEntity(zuoweiyuyue);
+        zuoweiyuyue.setQiandaozhuangtai("未签到");
         zuoweiyuyueService.insert(zuoweiyuyue);
         return R.ok().put("data",zuoweiyuyue.getId());
     }
 
     /**
-     * 前台保存
+     * 前台保存 — 用户预约座位
+     * 检查用户是否被禁止预约（违约次数>=3）
      */
     @SysLog("新增座位预约")
     @RequestMapping("/add")
     public R add(@RequestBody ZuoweiyuyueEntity zuoweiyuyue, HttpServletRequest request){
-        //ValidatorUtils.validateEntity(zuoweiyuyue);
+        // 检查用户是否被禁止预约
+        if(zuoweiyuyue.getXuehao() != null) {
+            EntityWrapper<YonghuEntity> yew = new EntityWrapper<YonghuEntity>();
+            yew.eq("xuehao", zuoweiyuyue.getXuehao());
+            YonghuEntity yonghu = yonghuService.selectOne(yew);
+            if(yonghu != null && yonghu.getYuyuejinzhi() != null && yonghu.getYuyuejinzhi() == 1) {
+                return R.error("您的预约功能已被禁止（违约次数已达上限），请联系管理员");
+            }
+        }
+        // 设置初始签到状态
+        zuoweiyuyue.setQiandaozhuangtai("未签到");
         zuoweiyuyueService.insert(zuoweiyuyue);
         return R.ok().put("data",zuoweiyuyue.getId());
     }
@@ -200,7 +219,7 @@ public class ZuoweiyuyueController {
     }
 
     /**
-     * 审核
+     * 审核 — 预约通过后自动生成签到审核记录
      */
     @RequestMapping("/shBatch")
     @Transactional
@@ -211,7 +230,28 @@ public class ZuoweiyuyueController {
             ZuoweiyuyueEntity zuoweiyuyue = zuoweiyuyueService.selectById(id);
             zuoweiyuyue.setSfsh(sfsh);
             zuoweiyuyue.setShhf(shhf);
+            // 审核通过时，设置预约状态为"已确认"
+            if("是".equals(sfsh)) {
+                zuoweiyuyue.setReservationstate("已确认");
+            }
             list.add(zuoweiyuyue);
+
+            // 审核通过时，自动生成签到审核记录
+            if("是".equals(sfsh)) {
+                QiandaodengjiEntity qiandao = new QiandaodengjiEntity();
+                qiandao.setRefno(zuoweiyuyue.getRefno());
+                qiandao.setMingcheng(zuoweiyuyue.getMingcheng());
+                qiandao.setZangshuleixing(zuoweiyuyue.getZangshuleixing());
+                qiandao.setLouceng(zuoweiyuyue.getLouceng());
+                qiandao.setSeatnum(zuoweiyuyue.getSeatnum());
+                qiandao.setXuehao(zuoweiyuyue.getXuehao());
+                qiandao.setXingming(zuoweiyuyue.getXingming());
+                qiandao.setYuangonggonghao(zuoweiyuyue.getYuangonggonghao());
+                qiandao.setYuyueid(zuoweiyuyue.getId());
+                qiandao.setSfsh("待审核");
+                qiandao.setQiandaobeizhu("预约日期: " + zuoweiyuyue.getReservationdate() + ", 时间段: " + zuoweiyuyue.getTimeslot());
+                qiandaodengjiService.insert(qiandao);
+            }
         }
         zuoweiyuyueService.updateBatchById(list);
         return R.ok();

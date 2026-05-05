@@ -114,6 +114,11 @@ public class QiandaodengjiEntity<T> implements Serializable {
 	private String yuangonggonghao;
 	
 	/**
+	 * 关联预约ID
+	 */
+	private Long yuyueid;
+	
+	/**
 	 * 是否审核
 	 */
 	private String sfsh;

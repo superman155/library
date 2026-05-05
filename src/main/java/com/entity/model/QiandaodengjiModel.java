@@ -90,6 +90,12 @@ public class QiandaodengjiModel  implements Serializable {
 	 */
 	
 	private String yuangonggonghao;
+	
+	/**
+	 * 关联预约ID
+	 */
+	
+	private Long yuyueid;
 		
 	/**
 	 * 是否审核
@@ -277,6 +283,22 @@ public class QiandaodengjiModel  implements Serializable {
 	 */
 	public String getYuangonggonghao() {
 		return yuangonggonghao;
+	}
+				
+	
+	/**
+	 * 设置：关联预约ID
+	 */
+	 
+	public void setYuyueid(Long yuyueid) {
+		this.yuyueid = yuyueid;
+	}
+	
+	/**
+	 * 获取：关联预约ID
+	 */
+	public Long getYuyueid() {
+		return yuyueid;
 	}
 				
 	

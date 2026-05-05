@@ -275,6 +275,7 @@ CREATE TABLE `qiandaodengji` (
   `touxiang` longtext COLLATE utf8mb4_unicode_ci COMMENT '人脸识别',
   `shoujihaoma` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '手机号码',
   `yuangonggonghao` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '员工工号',
+  `yuyueid` bigint(20) DEFAULT NULL COMMENT '关联预约ID',
   `sfsh` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT '待审核' COMMENT '是否审核',
   `shhf` longtext COLLATE utf8mb4_unicode_ci COMMENT '审核回复',
   PRIMARY KEY (`id`)
@@ -570,6 +571,8 @@ CREATE TABLE `yonghu` (
   `shoujihaoma` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '手机号码',
   `xueyuan` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '学院',
   `banji` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '班级',
+  `weiyuecishu` int(11) DEFAULT '0' COMMENT '违约次数',
+  `yuyuejinzhi` int(11) DEFAULT '0' COMMENT '预约禁止(0:正常,1:禁止)',
   PRIMARY KEY (`id`),
   UNIQUE KEY `xuehao` (`xuehao`)
 ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户';

@@ -12,6 +12,8 @@
         <result property="shoujihaoma" column="shoujihaoma"/>
         <result property="xueyuan" column="xueyuan"/>
         <result property="banji" column="banji"/>
+        <result property="weiyuecishu" column="weiyuecishu"/>
+        <result property="yuyuejinzhi" column="yuyuejinzhi"/>
     </resultMap>
 
 	<select id="selectListVO"

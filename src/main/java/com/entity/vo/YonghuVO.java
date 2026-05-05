@@ -61,6 +61,18 @@ public class YonghuVO  implements Serializable {
 	 */
 	
 	private String banji;
+	
+	/**
+	 * 违约次数
+	 */
+	
+	private Integer weiyuecishu;
+	
+	/**
+	 * 预约禁止(0:正常,1:禁止)
+	 */
+	
+	private Integer yuyuejinzhi;
 				
 	
 	/**
@@ -172,6 +184,38 @@ public class YonghuVO  implements Serializable {
 	 */
 	public String getBanji() {
 		return banji;
+	}
+				
+	
+	/**
+	 * 设置：违约次数
+	 */
+	 
+	public void setWeiyuecishu(Integer weiyuecishu) {
+		this.weiyuecishu = weiyuecishu;
+	}
+	
+	/**
+	 * 获取：违约次数
+	 */
+	public Integer getWeiyuecishu() {
+		return weiyuecishu;
+	}
+				
+	
+	/**
+	 * 设置：预约禁止
+	 */
+	 
+	public void setYuyuejinzhi(Integer yuyuejinzhi) {
+		this.yuyuejinzhi = yuyuejinzhi;
+	}
+	
+	/**
+	 * 获取：预约禁止
+	 */
+	public Integer getYuyuejinzhi() {
+		return yuyuejinzhi;
 	}
 			
 }
