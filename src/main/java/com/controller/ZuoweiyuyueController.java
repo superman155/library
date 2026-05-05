@@ -71,9 +71,6 @@ public class ZuoweiyuyueController {
 		if(tableName.equals("yonghu")) {
 			zuoweiyuyue.setXuehao((String)request.getSession().getAttribute("username"));
 		}
-		if(tableName.equals("gongzuorenyuan")) {
-			zuoweiyuyue.setYuangonggonghao((String)request.getSession().getAttribute("username"));
-		}
         //设置查询条件
         EntityWrapper<ZuoweiyuyueEntity> ew = new EntityWrapper<ZuoweiyuyueEntity>();
         if(reservationdatestart!=null) ew.ge("reservationdate", reservationdatestart);
@@ -288,9 +285,6 @@ public class ZuoweiyuyueController {
         if(tableName.equals("yonghu")) {
             ew.eq("xuehao", (String)request.getSession().getAttribute("username"));
         }
-        if(tableName.equals("gongzuorenyuan")) {
-            ew.eq("yuangonggonghao", (String)request.getSession().getAttribute("username"));
-        }
         //获取结果
         List<Map<String, Object>> result = zuoweiyuyueService.selectValue(params, ew);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -354,9 +348,6 @@ public class ZuoweiyuyueController {
         String tableName = request.getSession().getAttribute("tableName").toString();
         if(tableName.equals("yonghu")) {
             ew.eq("xuehao", (String)request.getSession().getAttribute("username"));
-        }
-        if(tableName.equals("gongzuorenyuan")) {
-            ew.eq("yuangonggonghao", (String)request.getSession().getAttribute("username"));
         }
         for(int i=0;i<yColumnNames.length;i++) {
             params.put("yColumn", yColumnNames[i]);
@@ -428,9 +419,6 @@ public class ZuoweiyuyueController {
         if(tableName.equals("yonghu")) {
             ew.eq("xuehao", (String)request.getSession().getAttribute("username"));
         }
-        if(tableName.equals("gongzuorenyuan")) {
-            ew.eq("yuangonggonghao", (String)request.getSession().getAttribute("username"));
-        }
         List<Map<String, Object>> result = zuoweiyuyueService.selectTimeStatValue(params, ew);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         for(Map<String, Object> m : result) {
@@ -499,9 +487,6 @@ public class ZuoweiyuyueController {
         if(tableName.equals("yonghu")) {
             ew.eq("xuehao", (String)request.getSession().getAttribute("username"));
         }
-        if(tableName.equals("gongzuorenyuan")) {
-            ew.eq("yuangonggonghao", (String)request.getSession().getAttribute("username"));
-        }
         for(int i=0;i<yColumnNames.length;i++) {
             params.put("yColumn", yColumnNames[i]);
             List<Map<String, Object>> result = zuoweiyuyueService.selectTimeStatValue(params, ew);
@@ -562,9 +547,6 @@ public class ZuoweiyuyueController {
         if(tableName.equals("yonghu")) {
             ew.eq("xuehao", (String)request.getSession().getAttribute("username"));
         }
-        if(tableName.equals("gongzuorenyuan")) {
-            ew.eq("yuangonggonghao", (String)request.getSession().getAttribute("username"));
-        }
         List<Map<String, Object>> result = zuoweiyuyueService.selectGroup(params, ew);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         for(Map<String, Object> m : result) {
@@ -588,9 +570,6 @@ public class ZuoweiyuyueController {
         String tableName = request.getSession().getAttribute("tableName").toString();
         if(tableName.equals("yonghu")) {
             zuoweiyuyue.setXuehao((String)request.getSession().getAttribute("username"));
-        }
-        if(tableName.equals("gongzuorenyuan")) {
-            zuoweiyuyue.setYuangonggonghao((String)request.getSession().getAttribute("username"));
         }
         EntityWrapper<ZuoweiyuyueEntity> ew = new EntityWrapper<ZuoweiyuyueEntity>();
         int count = zuoweiyuyueService.selectCount(MPUtil.sort(MPUtil.between(MPUtil.likeOrEq(ew, zuoweiyuyue), params), params));
